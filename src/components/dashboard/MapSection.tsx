@@ -1,166 +1,132 @@
 import { useState } from "react";
-import {
-  ScatterChart,
-  Scatter,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  ZAxis,
-} from "recharts";
-import { accidentCoordinates } from "./mockData";
-import { Toggle } from "@/components/ui/toggle";
-import { MapPin } from "lucide-react";
+import { MapContainer, TileLayer, Marker, Popup, Circle, LayersControl } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { Card } from "@/components/ui/card";
 
-type MapMode = "clusters" | "predictions";
+// Fix marker icon issue
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
 
-const riskColors: Record<string, string> = {
-  high: "hsl(0 72% 51%)",
-  medium: "hsl(38 92% 50%)",
-  low: "hsl(142 71% 45%)",
+interface Accident {
+  id: number;
+  lat: number;
+  lng: number;
+  severity: "Low" | "Medium" | "High";
+}
+
+const mockAccidents: Accident[] = [
+  { id: 1, lat: 19.076, lng: 72.8777, severity: "High" },
+  { id: 2, lat: 28.7041, lng: 77.1025, severity: "Medium" },
+  { id: 3, lat: 12.9716, lng: 77.5946, severity: "Low" },
+];
+
+const getColor = (severity: string) => {
+  if (severity === "High") return "red";
+  if (severity === "Medium") return "orange";
+  return "green";
 };
 
-const CustomDot = (props: any) => {
-  const { cx, cy, payload } = props;
-  const color = riskColors[payload.risk] || "#fff";
-  const size = payload.risk === "high" ? 10 : payload.risk === "medium" ? 7 : 5;
-  return (
-    <g>
-      <circle cx={cx} cy={cy} r={size + 4} fill={color} opacity={0.15} />
-      <circle cx={cx} cy={cy} r={size} fill={color} opacity={0.85} stroke={color} strokeWidth={1} />
-    </g>
-  );
-};
-
-const CustomTooltip = ({ active, payload }: any) => {
-  if (active && payload && payload.length) {
-    const d = payload[0]?.payload;
-    if (!d) return null;
-    const badgeClass = d.risk === "high" ? "badge-high" : d.risk === "medium" ? "badge-medium" : "badge-low";
-    return (
-      <div className="card-glass rounded-lg border p-3 text-xs shadow-xl">
-        <div className="font-semibold text-foreground">{d.zone}</div>
-        <div className="mt-1 flex items-center gap-2">
-          <span className={`rounded px-1.5 py-0.5 font-medium uppercase ${badgeClass}`}>{d.risk}</span>
-          <span className="text-muted-foreground">{d.count} accidents</span>
-        </div>
-        <div className="mt-1 text-muted-foreground">
-          Lat: {d.lat.toFixed(1)}° · Lng: {d.lng.toFixed(1)}°
-        </div>
-      </div>
-    );
-  }
-  return null;
-};
-
-export function MapSection() {
-  const [mode, setMode] = useState<MapMode>("clusters");
-
-  const highRisk = accidentCoordinates.filter((d) => d.risk === "high");
-  const medRisk = accidentCoordinates.filter((d) => d.risk === "medium");
-  const lowRisk = accidentCoordinates.filter((d) => d.risk === "low");
+export default function MapSection() {
+  const [predictiveMode, setPredictiveMode] = useState(false);
 
   return (
-    <div className="card-glass rounded-xl p-4">
-      {/* Header */}
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="font-semibold text-foreground">Accident Hotspot Map — India</h2>
-          <p className="text-xs text-muted-foreground">Lat/Lng coordinate plot · NH network coverage</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setMode("clusters")}
-            className={`rounded-md px-3 py-1.5 text-xs font-medium transition-all ${
-              mode === "clusters"
-                ? "bg-orange text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            Show Clusters
-          </button>
-          <button
-            onClick={() => setMode("predictions")}
-            className={`rounded-md px-3 py-1.5 text-xs font-medium transition-all ${
-              mode === "predictions"
-                ? "bg-orange text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            Show Predictions
-          </button>
-        </div>
+    <Card className="p-4 h-[600px]">
+      <div className="flex justify-between mb-2">
+        <h2 className="text-lg font-semibold">Accident Risk Map</h2>
+
+        <button
+          onClick={() => setPredictiveMode(!predictiveMode)}
+          className="px-3 py-1 text-sm bg-primary text-white rounded-md"
+        >
+          {predictiveMode ? "Predictive Mode" : "Historical Mode"}
+        </button>
       </div>
 
-      {/* Legend */}
-      <div className="mb-3 flex flex-wrap gap-4 text-xs">
-        {[
-          { label: "High Risk", cls: "badge-high" },
-          { label: "Medium Risk", cls: "badge-medium" },
-          { label: "Low Risk", cls: "badge-low" },
-        ].map(({ label, cls }) => (
-          <span key={label} className={`flex items-center gap-1.5 rounded px-2 py-0.5 ${cls}`}>
-            <span className="h-2 w-2 rounded-full bg-current" />
-            {label}
-          </span>
-        ))}
-        {mode === "predictions" && (
-          <span className="flex items-center gap-1.5 rounded px-2 py-0.5 bg-chart-purple/10 text-chart-purple border border-chart-purple/20">
-            <span className="h-2 w-2 rounded-full bg-current" />
-            Predicted Zone
-          </span>
-        )}
+      <div className="absolute bottom-6 right-6 bg-black/70 text-white text-xs p-3 rounded-lg z-[1000]">
+        <div>🔴 High Severity</div>
+        <div>🟠 Medium Severity</div>
+        <div>🟢 Low Severity</div>
+        <div>🔥 Heatmap Density</div>
+        <div>🟦 Intervention Zone</div>
       </div>
 
-      {/* Map */}
-      <div className="relative rounded-lg bg-muted/30 border border-border overflow-hidden" style={{ height: 380 }}>
-        {/* India outline hint */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <MapPin className="h-40 w-40 text-border/20" />
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-50">
+          <div className="text-white animate-pulse">
+            Initializing AI Risk Engine...
+          </div>
         </div>
-        <div className="absolute top-2 left-2 rounded bg-muted/60 px-2 py-1 text-xs text-muted-foreground backdrop-blur-sm">
-          India · Lng 68°–97°E · Lat 8°–37°N
-        </div>
+      )}
 
-        <ResponsiveContainer width="100%" height="100%">
-          <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-            <XAxis
-              type="number"
-              dataKey="lng"
-              domain={[68, 97]}
-              tick={{ fontSize: 10, fill: "hsl(215 20% 55%)" }}
-              label={{ value: "Longitude (°E)", position: "insideBottom", offset: -10, fontSize: 10, fill: "hsl(215 20% 55%)" }}
-            />
-            <YAxis
-              type="number"
-              dataKey="lat"
-              domain={[8, 37]}
-              tick={{ fontSize: 10, fill: "hsl(215 20% 55%)" }}
-              label={{ value: "Latitude (°N)", angle: -90, position: "insideLeft", offset: 10, fontSize: 10, fill: "hsl(215 20% 55%)" }}
-            />
-            <ZAxis range={[60, 400]} />
-            <Tooltip content={<CustomTooltip />} />
-            <Scatter data={lowRisk} shape={<CustomDot />} />
-            <Scatter data={medRisk} shape={<CustomDot />} />
-            <Scatter data={highRisk} shape={<CustomDot />} />
-            {mode === "predictions" && (
-              <Scatter
-                data={[
-                  { lat: 29.1, lng: 76.3, risk: "predicted", count: 180, zone: "Predicted: Haryana NH" },
-                  { lat: 20.0, lng: 74.0, risk: "predicted", count: 145, zone: "Predicted: Nashik Corridor" },
-                  { lat: 16.5, lng: 79.5, risk: "predicted", count: 132, zone: "Predicted: Krishna Valley" },
-                ]}
-                shape={(props: any) => (
-                  <g>
-                    <circle cx={props.cx} cy={props.cy} r={12} fill="hsl(262 83% 67%)" opacity={0.2} />
-                    <circle cx={props.cx} cy={props.cy} r={7} fill="hsl(262 83% 67%)" opacity={0.8} stroke="hsl(262 83% 67%)" strokeWidth={1.5} strokeDasharray="3 2" />
-                  </g>
-                )}
-              />
-            )}
-          </ScatterChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
+      <MapContainer
+        center={[22.5, 78.9]}
+        zoom={5}
+        scrollWheelZoom={true}
+        className="h-full w-full rounded-xl"
+      >
+        <TileLayer
+          attribution='&copy; OpenStreetMap contributors'
+          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        />
+
+        <LayersControl position="topright">
+          <LayersControl.Overlay checked name="Accident Clusters">
+            <MarkerClusterGroup>
+              {mockAccidents.map((acc) => (
+                <Marker key={acc.id} position={[acc.lat, acc.lng]}>
+                  <Popup>
+                    <div>
+                      <strong>Severity:</strong> {acc.severity}
+                      <br />
+                      <strong>Risk Score:</strong>{" "}
+                      {acc.severity === "High"
+                        ? "85%"
+                        : acc.severity === "Medium"
+                        ? "60%"
+                        : "30%"}
+                      <br />
+                      <strong>Suggested Action:</strong>
+                      <br />
+                      {acc.severity === "High"
+                        ? "Install Speed Camera"
+                        : "Increase Patrol"}
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+            </MarkerClusterGroup>
+          </LayersControl.Overlay>
+
+          <LayersControl.Overlay name="High Risk Zones">
+            <>
+              {predictiveMode &&
+                mockAccidents
+                  .filter((acc) => acc.severity === "High")
+                  .map((acc) => (
+                    <Circle
+                      key={acc.id}
+                      center={[acc.lat, acc.lng]}
+                      radius={50000}
+                      pathOptions={{
+                        color: "red",
+                        fillColor: "red",
+                        fillOpacity: 0.3,
+                      }}
+                    />
+                  ))}
+            </>
+          </LayersControl.Overlay>
+        </LayersControl>
+      </MapContainer>
+    </Card>
   );
 }

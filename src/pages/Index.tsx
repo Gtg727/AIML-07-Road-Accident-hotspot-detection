@@ -3,7 +3,7 @@ import { Menu } from "lucide-react";
 import { Header } from "@/components/dashboard/Header";
 import { FiltersSidebar } from "@/components/dashboard/FiltersSidebar";
 import { KPICards } from "@/components/dashboard/KPICards";
-import { MapSection } from "@/components/dashboard/MapSection";
+import MapSection from "@/components/dashboard/MapSection";
 import { HotspotPanel } from "@/components/dashboard/HotspotPanel";
 import { RiskPredictionPanel } from "@/components/dashboard/RiskPredictionPanel";
 import { ContributingFactors } from "@/components/dashboard/ContributingFactors";

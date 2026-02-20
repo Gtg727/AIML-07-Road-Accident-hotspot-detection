@@ -1,5 +1,7 @@
 import { AlertTriangle, MapPin, TrendingUp, Clock, Skull } from "lucide-react";
 import { kpiData } from "./mockData";
+import CountUp from "react-countup";
+<CountUp end={5234} duration={2} />
 
 interface KPICardProps {
   label: string;
