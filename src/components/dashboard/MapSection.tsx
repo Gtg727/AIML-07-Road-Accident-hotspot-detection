@@ -1,11 +1,18 @@
-import { useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, Circle, LayersControl } from "react-leaflet";
+import { useState, useEffect } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Circle,
+  LayersControl,
+} from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Card } from "@/components/ui/card";
 
-// Fix marker icon issue
+// Fix Leaflet default marker icon issue
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -29,17 +36,22 @@ const mockAccidents: Accident[] = [
   { id: 3, lat: 12.9716, lng: 77.5946, severity: "Low" },
 ];
 
-const getColor = (severity: string) => {
-  if (severity === "High") return "red";
-  if (severity === "Medium") return "orange";
-  return "green";
-};
-
 export default function MapSection() {
   const [predictiveMode, setPredictiveMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simulate AI engine loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <Card className="p-4 h-[600px]">
+    <Card className="relative p-4 h-[600px] overflow-hidden">
+      {/* Header */}
       <div className="flex justify-between mb-2">
         <h2 className="text-lg font-semibold">Accident Risk Map</h2>
 
@@ -51,6 +63,7 @@ export default function MapSection() {
         </button>
       </div>
 
+      {/* Map Legend */}
       <div className="absolute bottom-6 right-6 bg-black/70 text-white text-xs p-3 rounded-lg z-[1000]">
         <div>🔴 High Severity</div>
         <div>🟠 Medium Severity</div>
@@ -59,14 +72,16 @@ export default function MapSection() {
         <div>🟦 Intervention Zone</div>
       </div>
 
+      {/* AI Loader Overlay */}
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-50">
-          <div className="text-white animate-pulse">
+          <div className="text-white animate-pulse text-sm">
             Initializing AI Risk Engine...
           </div>
         </div>
       )}
 
+      {/* Map */}
       <MapContainer
         center={[22.5, 78.9]}
         zoom={5}
@@ -74,11 +89,12 @@ export default function MapSection() {
         className="h-full w-full rounded-xl"
       >
         <TileLayer
-          attribution='&copy; OpenStreetMap contributors'
+          attribution="&copy; OpenStreetMap contributors"
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         />
 
         <LayersControl position="topright">
+          {/* Cluster Layer */}
           <LayersControl.Overlay checked name="Accident Clusters">
             <MarkerClusterGroup>
               {mockAccidents.map((acc) => (
@@ -106,6 +122,7 @@ export default function MapSection() {
             </MarkerClusterGroup>
           </LayersControl.Overlay>
 
+          {/* Predictive High Risk Zones */}
           <LayersControl.Overlay name="High Risk Zones">
             <>
               {predictiveMode &&
