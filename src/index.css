@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 47% 5%;
+    --foreground: 210 40% 95%;
+
+    --card: 220 40% 8%;
+    --card-foreground: 210 40% 95%;
+
+    --popover: 220 40% 8%;
+    --popover-foreground: 210 40% 95%;
+
+    --primary: 25 95% 53%;
+    --primary-foreground: 220 47% 5%;
+
+    --secondary: 215 50% 14%;
+    --secondary-foreground: 210 40% 95%;
+
+    --muted: 215 40% 12%;
+    --muted-foreground: 215 20% 55%;
+
+    --accent: 25 95% 53%;
+    --accent-foreground: 220 47% 5%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 215 35% 18%;
+    --input: 215 35% 18%;
+    --ring: 25 95% 53%;
+
+    --radius: 0.5rem;
+
+    /* Custom NHAI tokens */
+    --navy-deep: 220 47% 5%;
+    --navy-card: 220 40% 8%;
+    --navy-elevated: 215 42% 11%;
+    --navy-border: 215 35% 18%;
+    --orange-glow: 25 95% 53%;
+    --orange-muted: 25 80% 40%;
+    --risk-high: 0 72% 51%;
+    --risk-medium: 38 92% 50%;
+    --risk-low: 142 71% 45%;
+    --chart-blue: 210 100% 56%;
+    --chart-purple: 262 83% 67%;
+
+    --gradient-card: linear-gradient(135deg, hsl(220, 40%, 9%) 0%, hsl(215, 42%, 12%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(25, 95%, 53%) 0%, hsl(38, 92%, 50%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(220, 47%, 5%) 0%, hsl(215, 50%, 9%) 100%);
+    --shadow-card: 0 4px 24px -4px hsl(220 47% 2% / 0.8);
+    --shadow-orange: 0 0 20px -4px hsl(25 95% 53% / 0.4);
+    --glow-orange: 0 0 40px hsl(25 95% 53% / 0.15);
+
+    --sidebar-background: 220 47% 5%;
+    --sidebar-foreground: 210 40% 90%;
+    --sidebar-primary: 25 95% 53%;
+    --sidebar-primary-foreground: 220 47% 5%;
+    --sidebar-accent: 215 42% 11%;
+    --sidebar-accent-foreground: 210 40% 90%;
+    --sidebar-border: 215 35% 15%;
+    --sidebar-ring: 25 95% 53%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  h1, h2, h3 {
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  .card-glass {
+    background: var(--gradient-card);
+    border: 1px solid hsl(var(--navy-border));
+    box-shadow: var(--shadow-card);
+  }
+  .text-orange {
+    color: hsl(var(--orange-glow));
+  }
+  .badge-high {
+    background: hsl(var(--risk-high) / 0.15);
+    color: hsl(var(--risk-high));
+    border: 1px solid hsl(var(--risk-high) / 0.3);
+  }
+  .badge-medium {
+    background: hsl(var(--risk-medium) / 0.15);
+    color: hsl(var(--risk-medium));
+    border: 1px solid hsl(var(--risk-medium) / 0.3);
+  }
+  .badge-low {
+    background: hsl(var(--risk-low) / 0.15);
+    color: hsl(var(--risk-low));
+    border: 1px solid hsl(var(--risk-low) / 0.3);
+  }
+  .orange-glow {
+    box-shadow: var(--shadow-orange);
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--navy-border)) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--navy-border));
+    border-radius: 2px;
+  }
+}
