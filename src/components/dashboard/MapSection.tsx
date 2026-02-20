@@ -68,7 +68,7 @@ export default function MapSection() {
         <div>🔴 High Severity</div>
         <div>🟠 Medium Severity</div>
         <div>🟢 Low Severity</div>
-        <div>🔥 Heatmap Density</div>
+        <div>🛰 Satellite Mode Available</div>
         <div>🟦 Intervention Zone</div>
       </div>
 
@@ -88,13 +88,33 @@ export default function MapSection() {
         scrollWheelZoom={true}
         className="h-full w-full rounded-xl"
       >
-        <TileLayer
-          attribution="&copy; OpenStreetMap contributors"
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-        />
-
         <LayersControl position="topright">
-          {/* Cluster Layer */}
+
+          {/* 🌑 Dark View (Default) */}
+          <LayersControl.BaseLayer checked name="Dark View">
+            <TileLayer
+              attribution="&copy; OpenStreetMap contributors"
+              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            />
+          </LayersControl.BaseLayer>
+
+          {/* 🗺 Standard Light View */}
+          <LayersControl.BaseLayer name="Standard View">
+            <TileLayer
+              attribution="&copy; OpenStreetMap contributors"
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+          </LayersControl.BaseLayer>
+
+          {/* 🛰 Satellite View */}
+          <LayersControl.BaseLayer name="Satellite View">
+            <TileLayer
+              attribution="&copy; Esri"
+              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+            />
+          </LayersControl.BaseLayer>
+
+          {/* Accident Cluster Layer */}
           <LayersControl.Overlay checked name="Accident Clusters">
             <MarkerClusterGroup>
               {mockAccidents.map((acc) => (
@@ -142,6 +162,7 @@ export default function MapSection() {
                   ))}
             </>
           </LayersControl.Overlay>
+
         </LayersControl>
       </MapContainer>
     </Card>
