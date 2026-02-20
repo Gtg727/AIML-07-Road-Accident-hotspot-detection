@@ -79,7 +79,7 @@ export function ContributingFactors() {
             <Legend
               iconType="circle"
               iconSize={8}
-              wrapperStyle={{ fontSize: "10px", color: "hsl(215 20% 55%)" }}
+              wrapperStyle={{ fontSize: "10px", color: "hsl(0, 0%, 100%)" }}
             />
           </PieChart>
         </ResponsiveContainer>
@@ -90,7 +90,7 @@ export function ContributingFactors() {
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={timeOfDayData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(215 35% 18%)" />
-            <XAxis dataKey="hour" tick={TICK_STYLE} interval={5} />
+            <XAxis dataKey="hour" tick={TICK_STYLE} interval={1} />
             <YAxis tick={TICK_STYLE} />
             <Tooltip {...tooltipStyle} formatter={(v: number) => [v.toLocaleString(), "Accidents"]} />
             <Line

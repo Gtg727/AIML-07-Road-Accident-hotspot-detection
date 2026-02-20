@@ -55,47 +55,33 @@ export const hotspotClusters = [
 ];
 
 export const weatherData = [
-  { weather: "Clear", accidents: 45230 },
-  { weather: "Fog", accidents: 38760 },
-  { weather: "Rain", accidents: 32450 },
-  { weather: "Dust", accidents: 18920 },
-  { weather: "Haze", accidents: 14320 },
-  { weather: "Night", accidents: 29870 },
+  { weather: "Clear", accidents: 365865 },
+  { weather: "Fog", accidents: 34266 },
+  { weather: "Rain", accidents: 37316 },
+  { weather: "Hail", accidents: 3378 },
+  { weather: "other", accidents: 39758 },
 ];
 
 export const vehicleTypeData = [
-  { name: "Two-Wheelers", value: 38, color: "#f97316" },
-  { name: "Cars/Jeeps", value: 28, color: "#3b82f6" },
-  { name: "Trucks", value: 18, color: "#ef4444" },
-  { name: "Buses", value: 9, color: "#a855f7" },
-  { name: "Others", value: 7, color: "#22c55e" },
+  { name: "Two-Wheelers", value: 44.45, color: "#f97316" },
+  { name: "Cars/Jeeps", value: 12.49, color: "#3b82f6" },
+  { name: "Trucks", value: 6.28, color: "#ef4444" },
+  { name: "Buses", value: 2.38, color: "#a855f7" },
+  { name: "Others", value: 8.14, color: "#22c55e" },
+  { name : "Auto rickhsaw", value: 3.91, color: "#fdda0D"},
+  { name : "Bicycle", value: 2.87, color: "#ffc0cb"},
+  { name : "Pedestrian", value: 19.48, color: "#c2b8f5"}
 ];
 
 export const timeOfDayData = [
-  { hour: "12AM", accidents: 3240 },
-  { hour: "1AM", accidents: 4120 },
-  { hour: "2AM", accidents: 5340 },
-  { hour: "3AM", accidents: 4890 },
-  { hour: "4AM", accidents: 3780 },
-  { hour: "5AM", accidents: 2910 },
-  { hour: "6AM", accidents: 3450 },
-  { hour: "7AM", accidents: 5670 },
-  { hour: "8AM", accidents: 7820 },
-  { hour: "9AM", accidents: 6540 },
-  { hour: "10AM", accidents: 5230 },
-  { hour: "11AM", accidents: 4890 },
-  { hour: "12PM", accidents: 5120 },
-  { hour: "1PM", accidents: 4760 },
-  { hour: "2PM", accidents: 4930 },
-  { hour: "3PM", accidents: 5340 },
-  { hour: "4PM", accidents: 6120 },
-  { hour: "5PM", accidents: 7450 },
-  { hour: "6PM", accidents: 8230 },
-  { hour: "7PM", accidents: 8940 },
-  { hour: "8PM", accidents: 9120 },
-  { hour: "9PM", accidents: 9450 },
-  { hour: "10PM", accidents: 9870 },
-  { hour: "11PM", accidents: 7650 },
+  { hour: "12AM", accidents: 23471 },
+  { hour: "3AM", accidents: 24152 },
+  { hour: "6AM", accidents: 48304 },
+  { hour: "9AM", accidents: 65664 },
+  { hour: "12PM", accidents: 67979 },
+  { hour: "3PM", accidents: 79637 },
+  { hour: "6PM", accidents: 94009 },
+  { hour: "9PM", accidents: 52915 },
 ];
 
 export const roadGeometryData = [
