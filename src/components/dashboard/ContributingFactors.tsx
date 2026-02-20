@@ -106,7 +106,7 @@ export function ContributingFactors() {
       </ChartCard>
 
       {/* Bar: Road Geometry */}
-      <ChartCard title="Road Geometry vs Rate" sub="Accident rate per geometry type">
+      <ChartCard title="Road Feature vs Rate" sub="Accident rate per geometry type">
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={roadGeometryData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(215 35% 18%)" />

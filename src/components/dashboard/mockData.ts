@@ -85,12 +85,14 @@ export const timeOfDayData = [
 ];
 
 export const roadGeometryData = [
-  { geometry: "Straight", rate: 42 },
-  { geometry: "Curve", rate: 78 },
-  { geometry: "Bridge", rate: 56 },
-  { geometry: "Junction", rate: 89 },
-  { geometry: "Roundabout", rate: 63 },
-  { geometry: "Steep", rate: 71 },
+  { geometry: "Straight", rate: 309247/461312 * 100 },
+  { geometry: "Curve", rate: 54593/461312 * 100 },
+  { geometry: "Bridge", rate: 14111/461312 * 100 },
+  { geometry: "Culvert", rate:  7384/461312 * 100},
+  { geometry: "Potholes", rate: 3625/461312 * 100 },
+  { geometry: "Steep", rate: 4475/461312 * 100 },
+  { geometry: "Ongoing road works", rate: 9211/461312 * 100},
+  { geometry: "Other", rate: 57845/461312 * 100}
 ];
 
 export const hourlyHeatmapData = Array.from({ length: 7 }, (_, day) =>
